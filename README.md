@@ -46,16 +46,14 @@ Pour installer cette bibliothèque :
 
 Pour tester le fonctionnement de cette bibliothèque :
 
-1.    Ouvrez le fichier *Trace Log.applescript* avec l'« Éditeur de script »
-2.    Copiez tout le code qui se trouve sous :
+1. Ouvrez le fichier *Trace Log.applescript* avec l'« Éditeur de script »
+2. Copiez dans un nouveau fichier Applescript tout le code qui se trouve sous :
 
         -----------------------------------------------------------------------
         --                              TESTS
         -----------------------------------------------------------------------
 
-     Dans un nouveau fichier Applescript.
-
-3.   Enlevez les commentaires «(*» et «*)»
-4.   Lancer le script
+3. Enlevez les marqueurs de commentaires «(\*» et «\*)»
+4. Lancer le script
 
 Vous savez comment utliser cette bibliothèque. Faites de même dans votre projet.
