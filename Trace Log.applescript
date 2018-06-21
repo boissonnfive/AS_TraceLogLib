@@ -29,6 +29,23 @@ property messageFinal : "FIN DU PROGRAMME"
 	*)
 
 
+
+
+(*
+Nom			: creerUnCheminDeFichierLog
+Description	: Renvoi un chemin vers un fichier de log dans ~/Library/Logs/
+fileName		: le nom du fichier de log sans extension
+retour		: Un chemin vers un fichier de log dans ~/Library/Logs/.
+Remarques	: Le nom du fichier de log est nom-du-script-sans-extension.log
+			  Le nom complet est donc : ~/Library/Logs/nom-du-script-sans-extension.log
+*)
+
+on creerUnCheminDeFichierLog(fileName)
+	set libAlias to path to library folder from user domain
+	return ((POSIX path of libAlias) as text) & "Logs/" & fileName & ".log"
+end creerUnCheminDeFichierLog
+
+
 (*
 Nom				: make new 
 Description		: Crée un nouveau TraceLog
@@ -41,22 +58,9 @@ retour			: un objet TraceLog
 on createTraceLog(fileName, theTimeStamp, theLevel)
 	copy me to unObjet
 	
-	set cheminLibrary to (POSIX path of (path to library folder from user domain)) as text
-	
-	set unObjet's cheminPOSIXComplet to (cheminLibrary & "Logs/" & fileName & ".log")
+	set unObjet's cheminPOSIXComplet to unObjet's creerUnCheminDeFichierLog(fileName)
 	set unObjet's dateEtHeure to theTimeStamp
 	set unObjet's niveauMin to theLevel
-	
-	try
-		set unObjet's referenceVersFichierLog to open for access (unObjet's cheminPOSIXComplet as POSIX file) ¬
-			with write permission
-		
-		unObjet's loggingIntroduction()
-		
-	on error
-		log "Erreur de création de fichier"
-		set unObjet to missing value
-	end try
 	
 	return unObjet
 end createTraceLog
@@ -80,10 +84,14 @@ to sLog(ligne) -- standard log
 	end if
 	
 	try
+		set referenceVersFichierLog to open for access (POSIX file cheminPOSIXComplet) with write permission
 		write ligne to referenceVersFichierLog starting at eof as «class utf8»
+		close access referenceVersFichierLog
 		set retour to ligne
 	on error
-		close access referenceVersFichierLog
+		try
+			close access referenceVersFichierLog
+		end try
 	end try
 	
 	return retour
@@ -174,7 +182,6 @@ Remarque	: Un message de fin est ajouté avant la fermeture (borne fin du log)
 *)
 on closeLog()
 	loggingTermination()
-	close access referenceVersFichierLog
 end closeLog
 
 
